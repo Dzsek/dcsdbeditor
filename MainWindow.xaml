@@ -53,7 +53,7 @@
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition Height="300"/>
                                 <RowDefinition />
-                            </Grid.RowDefinitions>
+                            </Grid.RowDefinitions> 
                             <Label>id</Label>
                             <TextBox Grid.Column="1" Text="{Binding id}" IsEnabled="False"/>
                             <Label Grid.Row="1">name</Label>
