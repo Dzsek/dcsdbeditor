@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace dcsdbeditor.Model
@@ -8,9 +9,9 @@ namespace dcsdbeditor.Model
     {
         public TinyAircraft() : base()
         {
-            tags = new List<string>();    
+            tags = new ObservableCollection<string>();    
         }
 
-        public List<string> tags { get; set; }
+        public ObservableCollection<string> tags { get; set; }
     }
 }

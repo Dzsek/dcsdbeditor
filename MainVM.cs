@@ -2,10 +2,12 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -19,10 +21,10 @@ namespace dcsdbeditor
         private const string AircraftJSON = AircraftDataFolder + "/aircrafts.json";
         private const string WeaponJSON = WeaponDataFolder + "/weapons.json";
 
-        private List<Aircraft> _aircraft;
-        private List<Weapon> _weapons;
-        private List<TinyAircraft> _aircraftList;
-        private List<TinyWeapon> _weaponList;
+        private ObservableCollection<Aircraft> _aircraft;
+        private ObservableCollection<Weapon> _weapons;
+        private ObservableCollection<TinyAircraft> _aircraftList;
+        private ObservableCollection<TinyWeapon> _weaponList;
         private TinyAircraft _selectedTinyAircraft;
         private TinyWeapon _selectedWeaponToAdd;
         private TinyObject _selectedAircraftWeapon;
@@ -42,6 +44,15 @@ namespace dcsdbeditor
             RemoveAircraftFromWeapon = new MyCommand(RemoveAircraftFromWeaponExecute);
             AddAircraftInstruction = new MyCommand(AddAircraftInstructionExecute);
             RemoveAircraftInstruction = new MyCommand(RemoveAircraftInstructionExecute);
+            AddTagToAircraft = new MyCommand(AddTagToAircraftExecute);
+            RemoveTagFromAircraft = new MyCommand(RemoveTagFromAircraftExecute);
+            AddTagToWeapon = new MyCommand(AddTagToWeaponExecute);
+            RemoveTagFromWeapon = new MyCommand(RemoveTagFromWeaponExecute);
+            SaveDataToDisk = new MyCommand(SaveDataToDiskExecute);
+            AddNewAircraft = new MyCommand(AddNewAircraftExecute);
+            RemoveAircraft = new MyCommand(RemoveAircraftExecute);
+            AddNewWeapon = new MyCommand(AddNewWeaponExecute);
+            RemoveWeapon = new MyCommand(RemoveWeaponExecute);
 
             InitializeDataDirectory();
             Load();
@@ -113,6 +124,108 @@ namespace dcsdbeditor
             }
         }
 
+        private void AddTagToAircraftExecute(object obj)
+        {
+            if (SelectedTinyAircraft != null)
+            {
+                SelectedTinyAircraft.tags.Add((string)obj);
+            }
+        }
+
+        private void RemoveTagFromAircraftExecute(object obj)
+        {
+            if (SelectedTinyAircraft != null)
+            {
+                SelectedTinyAircraft.tags.Remove((string)obj);
+            }
+        }
+
+        private void AddTagToWeaponExecute(object obj)
+        {
+            if (SelectedTinyWeapon != null)
+            {
+                SelectedTinyWeapon.tags.Add((string)obj);
+            }
+        }
+
+        private void RemoveTagFromWeaponExecute(object obj)
+        {
+            if (SelectedTinyWeapon != null)
+            {
+                SelectedTinyWeapon.tags.Remove((string)obj);
+            }
+        }
+
+        private void AddNewAircraftExecute(object obj)
+        {
+            var id = (string)obj;
+            if (!string.IsNullOrWhiteSpace(id))
+            {
+                _aircraftList.Add(new TinyAircraft { id = id, name = "" });
+                _aircraft.Add(new Model.Aircraft { id = id, description = "", name = "" });
+            }
+        }
+
+        private void RemoveAircraftExecute(object obj)
+        {
+            var ta = obj as TinyAircraft;
+            var ar = _aircraft.FirstOrDefault(x => x.id == ta.id);
+            _aircraft.Remove(ar);
+            _aircraftList.Remove(ta);
+        }
+
+        private void AddNewWeaponExecute(object obj)
+        {
+            var id = (string)obj;
+            if (!string.IsNullOrWhiteSpace(id))
+            {
+                _weaponList.Add(new TinyWeapon { id = id, name = "" });
+                _weapons.Add(new Model.Weapon { id = id, description = "", name = "" });
+            }
+        }
+
+        private void RemoveWeaponExecute(object obj)
+        {
+            var tw = obj as TinyWeapon;
+            var wp = _weapons.FirstOrDefault(x => x.id == tw.id);
+            _weapons.Remove(wp);
+            _weaponList.Remove(tw);
+        }
+
+        private void SaveDataToDiskExecute(object obj)
+        {
+            var result = MessageBox.Show("Save?", "Save?", MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.Cancel)
+            {
+                return;
+            }
+            var now = DateTime.Now;
+            Directory.Move("data", $"data_backup_{now.Year}_{now.Month}_{now.Day}_{now.Hour}_{now.Minute}_{now.Second}");
+
+            Directory.CreateDirectory(AircraftDataFolder);
+            Directory.CreateDirectory(WeaponDataFolder);
+            var weaponsfile = JsonConvert.SerializeObject(_weaponList, Formatting.Indented);
+            var aircraftFile = JsonConvert.SerializeObject(_aircraftList, Formatting.Indented);
+            File.WriteAllText(AircraftJSON, aircraftFile);
+            File.WriteAllText(WeaponJSON, weaponsfile);
+
+            foreach (var plane in _aircraft)
+            {
+                var planeFile = JsonConvert.SerializeObject(plane, Formatting.Indented);
+                Directory.CreateDirectory($"{AircraftDataFolder}/{plane.id}");
+                File.WriteAllText($"{AircraftDataFolder}/{plane.id}/data.json", planeFile);
+            }
+
+            foreach (var weapon in _weapons)
+            {
+                var weaponFile = JsonConvert.SerializeObject(weapon, Formatting.Indented);
+                Directory.CreateDirectory($"{WeaponDataFolder}/{weapon.id}");
+                File.WriteAllText($"{WeaponDataFolder}/{weapon.id}/data.json", weaponFile);
+            }
+
+            MessageBox.Show("Saved");
+        }
+
         public void Load()
         {
             var adata = File.ReadAllText(AircraftJSON);
@@ -154,10 +267,10 @@ namespace dcsdbeditor
                 weaponsFull.Add(weap);
             }
 
-            _aircraft = aircraftFull;
-            _aircraftList = aircraft.OrderBy(x => x.name).ToList();
-            _weapons = weaponsFull;
-            _weaponList = weapons.OrderBy(x => x.name).ToList();
+            _aircraft = new ObservableCollection<Aircraft>(aircraftFull);
+            _aircraftList = new ObservableCollection<TinyAircraft>(aircraft.OrderBy(x => x.name).ToList());
+            _weapons = new ObservableCollection<Weapon>(weaponsFull);
+            _weaponList = new ObservableCollection<TinyWeapon>(weapons.OrderBy(x => x.name).ToList());
         }
 
         public void InitializeDataDirectory()
@@ -221,6 +334,21 @@ namespace dcsdbeditor
         public ICommand AddAircraftToWeapon { get; set; }
 
         public ICommand RemoveAircraftFromWeapon { get; set; }
+
+        public ICommand AddTagToAircraft { get; set; }
+
+        public ICommand RemoveTagFromAircraft { get; set; }
+
+        public ICommand AddTagToWeapon { get; set; }
+
+        public ICommand RemoveTagFromWeapon { get; set; }
+
+        public ICommand SaveDataToDisk { get; set; }
+
+        public ICommand AddNewAircraft { get; set; }
+        public ICommand RemoveAircraft { get; set; }
+        public ICommand AddNewWeapon { get; set; }
+        public ICommand RemoveWeapon { get; set; }
 
         public TinyWeapon SelectedWeaponToAdd
         {
@@ -400,7 +528,7 @@ namespace dcsdbeditor
             }
         }
 
-        public List<Aircraft> Aircraft
+        public ObservableCollection<Aircraft> Aircraft
         {
             get
             {
@@ -414,7 +542,7 @@ namespace dcsdbeditor
             }
         }
 
-        public List<Weapon> Weapons
+        public ObservableCollection<Weapon> Weapons
         {
             get
             {
@@ -428,7 +556,7 @@ namespace dcsdbeditor
             }
         }
 
-        public List<TinyAircraft> AircraftList
+        public ObservableCollection<TinyAircraft> AircraftList
         {
             get
             {
@@ -442,7 +570,7 @@ namespace dcsdbeditor
             }
         }
 
-        public List<TinyWeapon> WeaponList
+        public ObservableCollection<TinyWeapon> WeaponList
         {
             get
             {
