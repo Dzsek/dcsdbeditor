@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace dcsdbeditor.Model
@@ -8,9 +9,9 @@ namespace dcsdbeditor.Model
     {
         public TinyAircraftWithInstructions(): base()
         {
-            instructions = new List<string>();
+            instructions = new ObservableCollection<string>();
         }
 
-        public List<string> instructions { get; set; }
+        public ObservableCollection<string> instructions { get; set; }
     }
 }

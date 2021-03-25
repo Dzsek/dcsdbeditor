@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace dcsdbeditor.Model
@@ -8,19 +9,19 @@ namespace dcsdbeditor.Model
     {
         public WeaponGroups()
         {
-            aam = new List<TinyObject>();
-            agm = new List<TinyObject>();
-            bomb = new List<TinyObject>();
-            fuel = new List<TinyObject>();
-            pod = new List<TinyObject>();
-            rocket = new List<TinyObject>();
+            aam = new ObservableCollection<TinyObject>();
+            agm = new ObservableCollection<TinyObject>();
+            bomb = new ObservableCollection<TinyObject>();
+            fuel = new ObservableCollection<TinyObject>();
+            pod = new ObservableCollection<TinyObject>();
+            rocket = new ObservableCollection<TinyObject>();
         }
 
-        public List<TinyObject> aam { get; set; }
-        public List<TinyObject> agm { get; set; }
-        public List<TinyObject> bomb { get; set; }
-        public List<TinyObject> fuel { get; set; }
-        public List<TinyObject> pod { get; set; }
-        public List<TinyObject> rocket { get; set; }
+        public ObservableCollection<TinyObject> aam { get; set; }
+        public ObservableCollection<TinyObject> agm { get; set; }
+        public ObservableCollection<TinyObject> bomb { get; set; }
+        public ObservableCollection<TinyObject> fuel { get; set; }
+        public ObservableCollection<TinyObject> pod { get; set; }
+        public ObservableCollection<TinyObject> rocket { get; set; }
     }
 }
