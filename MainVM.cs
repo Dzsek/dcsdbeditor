@@ -223,6 +223,19 @@ namespace dcsdbeditor
                     }
                 }
             }
+
+            foreach(var wp in _weapons)
+            {
+                var tiny = _weaponList.FirstOrDefault(x => x.id == wp.id);
+                foreach (var a in wp.aircraft)
+                {
+                    var air = _aircraft.FirstOrDefault(x => x.id == a.id);
+                    if (air != null && tiny != null)
+                    {
+                        air.weapons.Add(new TinyWeapon {id=tiny.id, name=tiny.name, category=tiny.category });
+                    }
+                }
+            }
         }
 
         private void SaveDataToDiskExecute(object obj)
