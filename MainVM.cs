@@ -27,8 +27,7 @@ namespace dcsdbeditor
         private ObservableCollection<TinyWeapon> _weaponList;
         private TinyAircraft _selectedTinyAircraft;
         private TinyWeapon _selectedWeaponToAdd;
-        private TinyObject _selectedAircraftWeapon;
-        private TabItem _selectedTab;
+        private TinyWeapon _selectedAircraftWeapon;
         private TinyWeapon _selectedTinyWeapon;
         private TinyAircraft _selectedAircraftToAdd;
         private TinyAircraftWithInstructions _selectedWeaponAircraft;
@@ -70,6 +69,8 @@ namespace dcsdbeditor
                 var weapon = item as TinyObject;
                 return weapon.name.ToLowerInvariant().Replace("-", "").Replace("/", "").Contains(AircraftWeaponFilterText.ToLower());
             };
+
+            WCProvider = new WeaponCategoryProvider();
         }
 
         private void AddAircraftInstructionExecute(object obj)
@@ -92,17 +93,17 @@ namespace dcsdbeditor
 
         private void AddWeaponToAircraftExecute(object obj)
         {
-            if (SelectedTab != null && SelectedAircraft != null && SelectedWeaponToAdd != null)
+            if (SelectedAircraft != null && SelectedWeaponToAdd != null)
             {
-                SelectedAircraft.AddWeapon((string)SelectedTab.Header, SelectedWeaponToAdd);
+                SelectedAircraft.AddWeapon(SelectedWeaponToAdd);
             }
         }
 
         private void RemoveWeaponFromAircraftExecute(object obj)
         {
-            if (SelectedTab != null && SelectedAircraft != null && SelectedAircraftWeapon != null)
+            if (SelectedAircraft != null && SelectedAircraftWeapon != null)
             {
-                SelectedAircraft.RemoveWeapon((string)SelectedTab.Header, SelectedAircraftWeapon);
+                SelectedAircraft.RemoveWeapon( SelectedAircraftWeapon);
                 SelectedAircraftWeapon = null;
             }
         }
@@ -192,8 +193,42 @@ namespace dcsdbeditor
             _weaponList.Remove(tw);
         }
 
+        private void Consolidate()
+        {
+            foreach (var p in _aircraftList)
+            {
+                foreach(var w in _weapons)
+                {
+                    foreach(var wp in w.aircraft)
+                    {
+                        if(wp.id == p.id)
+                        {
+                            wp.name = p.name;
+                        }
+                    }
+                }
+            }
+
+            foreach(var w in _weaponList)
+            {
+                foreach(var p in _aircraft)
+                {
+                    foreach(var pw in p.weapons)
+                    {
+                        if(pw.id==w.id)
+                        {
+                            pw.category = w.category;
+                            pw.name = w.name;
+                        }
+                    }
+                }
+            }
+        }
+
         private void SaveDataToDiskExecute(object obj)
         {
+            Consolidate();
+
             var result = MessageBox.Show("Save?", "Save?", MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.Cancel)
             {
@@ -292,6 +327,8 @@ namespace dcsdbeditor
         public ICollectionView FilteredWeapons { get; set; }
 
         public ICollectionView FilteredAircraft { get; set; }
+
+        public WeaponCategoryProvider WCProvider { get; set; }
 
         public string WeaponAircraftFilterText
         {
@@ -426,7 +463,7 @@ namespace dcsdbeditor
             }
         }
 
-        public TinyObject SelectedAircraftWeapon
+        public TinyWeapon SelectedAircraftWeapon
         {
             get
             {
@@ -455,20 +492,6 @@ namespace dcsdbeditor
             }
         }
 
-        public TabItem SelectedTab
-        {
-            get
-            {
-                return _selectedTab;
-            }
-
-            set
-            {
-                _selectedTab = value;
-                Notify(nameof(SelectedTab));
-            }
-        }
-
         public TinyAircraft SelectedTinyAircraft
         {
             get
@@ -479,6 +502,8 @@ namespace dcsdbeditor
             set
             {
                 _selectedTinyAircraft = value;
+                WCProvider.SetAircraft(SelectedAircraft);
+                WCProvider.Refresh();
                 Notify(nameof(SelectedTinyAircraft));
                 Notify(nameof(SelectedAircraft));
             }

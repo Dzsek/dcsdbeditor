@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:dcsdbeditor"
         mc:Ignorable="d"
         Title="MainWindow" Height="768" Width="1366">
@@ -147,14 +148,14 @@
                                             <Button VerticalAlignment="Bottom" Content=">>" Command="{Binding DataContext.AddWeaponToAircraft, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"></Button>
                                             <Button Grid.Row="1" VerticalAlignment="top" Content="X" Command="{Binding DataContext.RemoveWeaponFromAircraft, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"></Button>
                                         </Grid>
-                                        <TabControl Grid.Column="2" Grid.RowSpan="2" SelectedItem="{Binding DataContext.SelectedTab, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}">
-                                            <TabItem Header="aam" DataContext="{Binding weapons.aam}">
+                                        <UniformGrid Rows="1" Columns="6" Grid.Column="2" Grid.RowSpan="2" DataContext="{Binding DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}">
+                                            <GroupBox Header="aam">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="auto"/>
                                                         <ColumnDefinition/>
                                                     </Grid.ColumnDefinitions>
-                                                    <ListBox ItemsSource="{Binding }" SelectedItem="{Binding DataContext.SelectedAircraftWeapon, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}">
+                                                    <ListBox ItemsSource="{Binding WCProvider.aam}" SelectedItem="{Binding SelectedAircraftWeapon}">
                                                         <ListBox.ItemTemplate>
                                                             <DataTemplate>
                                                                 <TextBlock Text="{Binding name}"/>
@@ -162,14 +163,14 @@
                                                         </ListBox.ItemTemplate>
                                                     </ListBox>
                                                 </Grid>
-                                            </TabItem>
-                                            <TabItem Header="agm" DataContext="{Binding weapons.agm}">
+                                            </GroupBox>
+                                            <GroupBox Header="agm" >
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="auto"/>
                                                         <ColumnDefinition/>
                                                     </Grid.ColumnDefinitions>
-                                                    <ListBox ItemsSource="{Binding }" SelectedItem="{Binding DataContext.SelectedAircraftWeapon, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}">
+                                                    <ListBox ItemsSource="{Binding WCProvider.agm}" SelectedItem="{Binding SelectedAircraftWeapon}">
                                                         <ListBox.ItemTemplate>
                                                             <DataTemplate>
                                                                 <TextBlock Text="{Binding name}"/>
@@ -177,14 +178,14 @@
                                                         </ListBox.ItemTemplate>
                                                     </ListBox>
                                                 </Grid>
-                                            </TabItem>
-                                            <TabItem Header="bomb" DataContext="{Binding weapons.bomb}">
+                                            </GroupBox>
+                                            <GroupBox Header="bomb" >
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="auto"/>
                                                         <ColumnDefinition/>
                                                     </Grid.ColumnDefinitions>
-                                                    <ListBox ItemsSource="{Binding }" SelectedItem="{Binding DataContext.SelectedAircraftWeapon, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}">
+                                                    <ListBox ItemsSource="{Binding WCProvider.bomb}" SelectedItem="{Binding SelectedAircraftWeapon}">
                                                         <ListBox.ItemTemplate>
                                                             <DataTemplate>
                                                                 <TextBlock Text="{Binding name}"/>
@@ -192,14 +193,14 @@
                                                         </ListBox.ItemTemplate>
                                                     </ListBox>
                                                 </Grid>
-                                            </TabItem>
-                                            <TabItem Header="fuel" DataContext="{Binding weapons.fuel}">
+                                            </GroupBox>
+                                            <GroupBox Header="fuel">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="auto"/>
                                                         <ColumnDefinition/>
                                                     </Grid.ColumnDefinitions>
-                                                    <ListBox ItemsSource="{Binding }" SelectedItem="{Binding DataContext.SelectedAircraftWeapon, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}">
+                                                    <ListBox ItemsSource="{Binding WCProvider.fuel}" SelectedItem="{Binding SelectedAircraftWeapon}">
                                                         <ListBox.ItemTemplate>
                                                             <DataTemplate>
                                                                 <TextBlock Text="{Binding name}"/>
@@ -207,14 +208,14 @@
                                                         </ListBox.ItemTemplate>
                                                     </ListBox>
                                                 </Grid>
-                                            </TabItem>
-                                            <TabItem Header="pod" DataContext="{Binding weapons.pod}">
+                                            </GroupBox>
+                                            <GroupBox Header="pod">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="auto"/>
                                                         <ColumnDefinition/>
                                                     </Grid.ColumnDefinitions>
-                                                    <ListBox ItemsSource="{Binding }" SelectedItem="{Binding DataContext.SelectedAircraftWeapon, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}">
+                                                    <ListBox ItemsSource="{Binding WCProvider.pod}" SelectedItem="{Binding SelectedAircraftWeapon}">
                                                         <ListBox.ItemTemplate>
                                                             <DataTemplate>
                                                                 <TextBlock Text="{Binding name}"/>
@@ -222,14 +223,14 @@
                                                         </ListBox.ItemTemplate>
                                                     </ListBox>
                                                 </Grid>
-                                            </TabItem>
-                                            <TabItem Header="rocket" DataContext="{Binding weapons.rocket}">
+                                            </GroupBox>
+                                            <GroupBox Header="rocket">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="auto"/>
                                                         <ColumnDefinition/>
                                                     </Grid.ColumnDefinitions>
-                                                    <ListBox ItemsSource="{Binding }" SelectedItem="{Binding DataContext.SelectedAircraftWeapon, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}">
+                                                    <ListBox ItemsSource="{Binding WCProvider.rocket}" SelectedItem="{Binding SelectedAircraftWeapon}">
                                                         <ListBox.ItemTemplate>
                                                             <DataTemplate>
                                                                 <TextBlock Text="{Binding name}"/>
@@ -237,8 +238,8 @@
                                                         </ListBox.ItemTemplate>
                                                     </ListBox>
                                                 </Grid>
-                                            </TabItem>
-                                        </TabControl>
+                                            </GroupBox>
+                                        </UniformGrid>
                                     </Grid>
                                 </GroupBox>
                             </Grid>
@@ -298,14 +299,24 @@
                                     <RowDefinition Height="auto"/>
                                     <RowDefinition Height="auto"/>
                                     <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
                                     <RowDefinition />
                                 </Grid.RowDefinitions>
                                 <Label>id</Label>
                                 <TextBox Grid.Column="1" Text="{Binding SelectedTinyWeapon.id}" IsEnabled="False"/>
                                 <Label Grid.Row="1">name</Label>
                                 <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedTinyWeapon.name}"/>
-                                <Label Grid.Row="2">tags</Label>
-                                <Grid  Grid.Row="2" Grid.Column="1">
+                                <Label Grid.Row="2">category</Label>
+                                <ComboBox Grid.Row="2" Grid.Column="1" SelectedItem="{Binding SelectedTinyWeapon.category, Mode=TwoWay}">
+                                    <sys:String>aam</sys:String>
+                                    <sys:String>agm</sys:String>
+                                    <sys:String>bomb</sys:String>
+                                    <sys:String>fuel</sys:String>
+                                    <sys:String>pod</sys:String>
+                                    <sys:String>rocket</sys:String>
+                                </ComboBox>
+                                <Label Grid.Row="3">tags</Label>
+                                <Grid  Grid.Row="3" Grid.Column="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition/>
                                         <ColumnDefinition Width="auto"/>
@@ -313,7 +324,7 @@
                                     <TextBox x:Name="tagTextWeapon"/>
                                     <Button Grid.Column="1" Content="+" Padding="5,0,5,0" CommandParameter="{Binding Text, ElementName=tagTextWeapon}" Command="{Binding AddTagToWeapon}"/>
                                 </Grid>
-                                <ListBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding SelectedTinyWeapon.tags}">
+                                <ListBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding SelectedTinyWeapon.tags}">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <Grid Background="gray">

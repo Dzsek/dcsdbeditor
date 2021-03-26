@@ -7,9 +7,14 @@ namespace dcsdbeditor.Model
 {
     public class TinyWeapon : TinyObject
     {
-        public TinyWeapon():base()
+        public TinyWeapon() : base()
         {
             tags = new ObservableCollection<string>();
+        }
+
+        public string category 
+        {
+            get;set;
         }
 
         public ObservableCollection<string> tags { get; set; }
