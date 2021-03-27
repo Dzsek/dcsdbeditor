@@ -34,6 +34,7 @@ namespace dcsdbeditor
         private int _selectedWeaponInstructionIndex;
         private string _aircraftWeaponFilterText = "";
         private string _weaponAircraftFilterText = "";
+        private KeyValuePair<string, string>? _selectedWeaponData;
 
         public MainVM()
         {
@@ -52,6 +53,8 @@ namespace dcsdbeditor
             RemoveAircraft = new MyCommand(RemoveAircraftExecute);
             AddNewWeapon = new MyCommand(AddNewWeaponExecute);
             RemoveWeapon = new MyCommand(RemoveWeaponExecute);
+            AddWeaponData = new MyCommand(AddWeaponDataExecute);
+            RemoveWeaponData = new MyCommand(RemoveWeaponDataExecute);
 
             InitializeDataDirectory();
             Load();
@@ -75,9 +78,9 @@ namespace dcsdbeditor
             FilteredWeapons.Filter += (item) =>
             {
                 var weapon = item as TinyObject;
-                if(SelectedAircraft!=null)
+                if (SelectedAircraft != null)
                 {
-                    if(SelectedAircraft.weapons.Any(x=>x.id==weapon.id))
+                    if (SelectedAircraft.weapons.Any(x => x.id == weapon.id))
                     {
                         return false;
                     }
@@ -120,7 +123,7 @@ namespace dcsdbeditor
         {
             if (SelectedAircraft != null && SelectedAircraftWeapon != null)
             {
-                SelectedAircraft.RemoveWeapon( SelectedAircraftWeapon);
+                SelectedAircraft.RemoveWeapon(SelectedAircraftWeapon);
                 SelectedAircraftWeapon = null;
             }
         }
@@ -199,7 +202,31 @@ namespace dcsdbeditor
             if (!string.IsNullOrWhiteSpace(id))
             {
                 _weaponList.Add(new TinyWeapon { id = id, name = id });
-                _weapons.Add(new Model.Weapon { id = id, description = id, name = id });
+                var wp = new Model.Weapon { id = id, description = id, name = id };
+                wp.data.Add("Weight", "-");
+                wp.data.Add("Range", "-");
+                wp.data.Add("Guidance", "-");
+                wp.data.Add("Type", "-");
+                wp.data.Add("Warhead", "-");
+                wp.data.Add("Targets", "-");
+                _weapons.Add(wp);
+            }
+        }
+
+        private void AddWeaponDataExecute(object obj)
+        {
+            if (SelectedWeapon != null)
+            {
+                SelectedWeapon.data.Add((string)obj, "new");
+            }
+        }
+
+        private void RemoveWeaponDataExecute(object obj)
+        {
+            var data = (KeyValuePair<string, string>)obj;
+            if (SelectedWeapon != null)
+            {
+                SelectedWeapon.data.Remove(data.Key);
             }
         }
 
@@ -211,15 +238,56 @@ namespace dcsdbeditor
             _weaponList.Remove(tw);
         }
 
+        public KeyValuePair<string, string>? SelectedWeaponData
+        {
+            get
+            {
+                return _selectedWeaponData;
+            }
+
+            set
+            {
+                _selectedWeaponData = value;
+                Notify(nameof(SelectedWeaponData));
+                Notify(nameof(SelectedWeaponDataValue));
+            }
+        }
+
+        public string SelectedWeaponDataValue
+        {
+            get
+            {
+                if (_selectedWeaponData.HasValue)
+                {
+                    return _selectedWeaponData.Value.Value;
+                }
+
+                return "";
+            }
+
+            set
+            {
+                if (SelectedWeapon != null && _selectedWeaponData.HasValue)
+                {
+                    SelectedWeapon.data[_selectedWeaponData.Value.Key] = value;
+                    SelectedWeaponData = SelectedWeapon.data.FirstOrDefault(x => x.Key == _selectedWeaponData.Value.Key);
+                    SelectedWeapon.data.Refresh();
+                }
+
+                Notify(nameof(SelectedWeapon));
+                Notify(nameof(SelectedWeaponDataValue));
+            }
+        }
+
         private void Consolidate()
         {
             foreach (var p in _aircraftList)
             {
-                foreach(var w in _weapons)
+                foreach (var w in _weapons)
                 {
-                    foreach(var wp in w.aircraft)
+                    foreach (var wp in w.aircraft)
                     {
-                        if(wp.id == p.id)
+                        if (wp.id == p.id)
                         {
                             wp.name = p.name;
                         }
@@ -227,13 +295,13 @@ namespace dcsdbeditor
                 }
             }
 
-            foreach(var w in _weaponList)
+            foreach (var w in _weaponList)
             {
-                foreach(var p in _aircraft)
+                foreach (var p in _aircraft)
                 {
-                    foreach(var pw in p.weapons)
+                    foreach (var pw in p.weapons)
                     {
-                        if(pw.id==w.id)
+                        if (pw.id == w.id)
                         {
                             pw.category = w.category;
                             pw.name = w.name;
@@ -242,7 +310,7 @@ namespace dcsdbeditor
                 }
             }
 
-            foreach(var wp in _weapons)
+            foreach (var wp in _weapons)
             {
                 var tiny = _weaponList.FirstOrDefault(x => x.id == wp.id);
                 foreach (var a in wp.aircraft)
@@ -250,9 +318,9 @@ namespace dcsdbeditor
                     var air = _aircraft.FirstOrDefault(x => x.id == a.id);
                     if (air != null && tiny != null)
                     {
-                        if(!air.weapons.Any(x=>x.id==tiny.id))
+                        if (!air.weapons.Any(x => x.id == tiny.id))
                         {
-                            air.weapons.Add(new TinyWeapon {id=tiny.id, name=tiny.name, category=tiny.category });
+                            air.weapons.Add(new TinyWeapon { id = tiny.id, name = tiny.name, category = tiny.category });
                         }
                     }
                 }
@@ -349,6 +417,16 @@ namespace dcsdbeditor
                 var rawdata = File.ReadAllText(file);
                 var weap = JsonConvert.DeserializeObject<Weapon>(rawdata);
                 weap.id = w.id;
+                ////if (weap.data.Count == 0)
+                ////{
+                ////    weap.data.Add("Weight", "-");
+                ////    weap.data.Add("Range", "-");
+                ////    weap.data.Add("Guidance", "-");
+                ////    weap.data.Add("Type", "-");
+                ////    weap.data.Add("Warhead", "-");
+                ////    weap.data.Add("Targets", "-");
+                ////}
+
                 weaponsFull.Add(weap);
             }
 
@@ -436,6 +514,9 @@ namespace dcsdbeditor
         public ICommand RemoveAircraft { get; set; }
         public ICommand AddNewWeapon { get; set; }
         public ICommand RemoveWeapon { get; set; }
+
+        public ICommand AddWeaponData { get; set; }
+        public ICommand RemoveWeaponData { get; set; }
 
         public TinyWeapon SelectedWeaponToAdd
         {

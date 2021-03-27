@@ -12,7 +12,7 @@ namespace dcsdbeditor.Model
         {
             name = "";
             description = "";
-            data = new Dictionary<string, string>();
+            data = new ObservableDictionary();
             aircraft = new ObservableCollection<TinyAircraftWithInstructions>();
         }
 
@@ -20,7 +20,7 @@ namespace dcsdbeditor.Model
         public string name { get; set; }
         public string description { get; set; }
 
-        public Dictionary<string, string> data { get; set; }
+        public ObservableDictionary data { get; set; }
 
         public ObservableCollection<TinyAircraftWithInstructions> aircraft { get; set; }
 

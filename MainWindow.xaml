@@ -357,8 +357,40 @@
                                 <TextBox Grid.Column="1" Text="{Binding id}" IsEnabled="False"/>
                                 <Label Grid.Row="1">name</Label>
                                 <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding name}"/>
-                                <Label Grid.Row="2">description</Label>
-                                <TextBox Grid.Row="3" Grid.ColumnSpan="2" Text="{Binding description}" AcceptsReturn="True" AcceptsTab="True"/>
+                                <Grid Grid.Row="2" Grid.RowSpan="2" Grid.ColumnSpan="2">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label>description</Label>
+                                    <TextBox Grid.Row="1" Text="{Binding description}" AcceptsReturn="True" AcceptsTab="True"/>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                        <Label>data</Label>
+                                        <TextBox x:Name="weaponDataKey" Width="200"></TextBox> 
+                                        <Button Padding="10,0,10,0" Command="{Binding DataContext.AddWeaponData, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" CommandParameter="{Binding Text,ElementName=weaponDataKey}">+</Button>
+                                        <TextBox Width="200" Text="{Binding DataContext.SelectedWeaponDataValue, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
+                                    </StackPanel>
+                                    <ListBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding data}" SelectedItem="{Binding DataContext.SelectedWeaponData, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="auto"/>
+                                                        <ColumnDefinition/>
+                                                        <ColumnDefinition/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Button CommandParameter="{Binding}" Command="{Binding DataContext.RemoveWeaponData, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}">X</Button>
+                                                    <Label Grid.Column="1" Content="{Binding Key}"></Label>
+                                                    <Label Grid.Column="2" Content="{Binding Value}"></Label>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </Grid>
                                 <GroupBox Header="Aircraft" Grid.Row="4" Grid.ColumnSpan="2">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
