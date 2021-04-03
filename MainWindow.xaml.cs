@@ -24,5 +24,23 @@ namespace dcsdbeditor
         {
             InitializeComponent();
         }
+
+        private void aircraftTagEnter(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter)
+            {
+                (DataContext as MainVM).AddTagToAircraft.Execute(tagTextAircraft.Text);
+                tagTextAircraft.Text = "";
+            }
+        }
+
+        private void weaponTagEnter(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                (DataContext as MainVM).AddTagToWeapon.Execute(tagTextWeapon.Text);
+                tagTextWeapon.Text = "";
+            }
+        }
     }
 }

@@ -83,7 +83,7 @@
                                         <ColumnDefinition/>
                                         <ColumnDefinition Width="auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBox x:Name="tagTextAircraft"/>
+                                    <TextBox x:Name="tagTextAircraft" KeyUp="aircraftTagEnter"/>
                                     <Button Grid.Column="1" Content="+" Padding="5,0,5,0" CommandParameter="{Binding Text, ElementName=tagTextAircraft}" Command="{Binding AddTagToAircraft}"/>
                                 </Grid>
                                 <ListBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding SelectedTinyAircraft.tags}">
@@ -321,7 +321,7 @@
                                         <ColumnDefinition/>
                                         <ColumnDefinition Width="auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBox x:Name="tagTextWeapon"/>
+                                    <TextBox x:Name="tagTextWeapon" KeyUp="weaponTagEnter"/>
                                     <Button Grid.Column="1" Content="+" Padding="5,0,5,0" CommandParameter="{Binding Text, ElementName=tagTextWeapon}" Command="{Binding AddTagToWeapon}"/>
                                 </Grid>
                                 <ListBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding SelectedTinyWeapon.tags}">

@@ -357,8 +357,9 @@ namespace dcsdbeditor
 
             Directory.CreateDirectory(AircraftDataFolder);
             Directory.CreateDirectory(WeaponDataFolder);
-            var weaponsfile = JsonConvert.SerializeObject(_weaponList, Formatting.Indented);
-            var aircraftFile = JsonConvert.SerializeObject(_aircraftList, Formatting.Indented);
+
+            var weaponsfile = JsonConvert.SerializeObject(_weaponList.OrderBy(x=>x.id), Formatting.Indented);
+            var aircraftFile = JsonConvert.SerializeObject(_aircraftList.OrderBy(x => x.id), Formatting.Indented);
             File.WriteAllText(AircraftJSON, aircraftFile);
             File.WriteAllText(WeaponJSON, weaponsfile);
 
