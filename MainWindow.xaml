@@ -7,6 +7,9 @@
         xmlns:local="clr-namespace:dcsdbeditor"
         mc:Ignorable="d"
         Title="MainWindow" Height="768" Width="1366">
+    <Window.Resources>
+        <local:UnfinishedColorConverter x:Key="ColorConvert"/>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -32,7 +35,7 @@
                         <ListBox ItemsSource="{Binding AircraftList}" SelectedItem="{Binding SelectedTinyAircraft}">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid Background="gray">
+                                    <Grid Background="{Binding Converter={StaticResource ResourceKey=ColorConvert}}" >
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="20"/>
                                             <ColumnDefinition />
@@ -261,7 +264,7 @@
                         <ListBox ItemsSource="{Binding WeaponList}" SelectedItem="{Binding SelectedTinyWeapon}">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid Background="gray">
+                                    <Grid Background="{Binding Converter={StaticResource ResourceKey=ColorConvert}}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="20"/>
                                             <ColumnDefinition />
