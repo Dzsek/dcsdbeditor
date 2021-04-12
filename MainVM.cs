@@ -358,7 +358,7 @@ namespace dcsdbeditor
             Directory.CreateDirectory(AircraftDataFolder);
             Directory.CreateDirectory(WeaponDataFolder);
 
-            var weaponsfile = JsonConvert.SerializeObject(_weaponList.OrderBy(x=>x.id), Formatting.Indented);
+            var weaponsfile = JsonConvert.SerializeObject(_weaponList.OrderBy(x => x.id), Formatting.Indented);
             var aircraftFile = JsonConvert.SerializeObject(_aircraftList.OrderBy(x => x.id), Formatting.Indented);
             File.WriteAllText(AircraftJSON, aircraftFile);
             File.WriteAllText(WeaponJSON, weaponsfile);
@@ -378,6 +378,37 @@ namespace dcsdbeditor
             }
 
             MessageBox.Show("Saved");
+        }
+
+        public void SelectNextWeaponData()
+        {
+            var found = false;
+            if (SelectedWeaponData.HasValue && SelectedWeapon != null)
+            {
+                var list = SelectedWeapon.data.ToList();
+                for (var i = 0; i < list.Count; i++)
+                {
+                    if (list[i].Key == SelectedWeaponData.Value.Key)
+                    {
+                        if (i + 1 >= list.Count)
+                        {
+                            SelectedWeaponData = list[0];
+                        }
+                        else
+                        {
+                            SelectedWeaponData = list[i + 1];
+                        }
+
+                        found = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!found && SelectedWeapon != null && SelectedWeapon.data.Count != 0)
+            {
+                SelectedWeaponData = SelectedWeapon.data.ToList()[0];
+            }
         }
 
         public void Load()

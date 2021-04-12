@@ -42,5 +42,16 @@ namespace dcsdbeditor
                 tagTextWeapon.Text = "";
             }
         }
+
+        private void tabpressed(object sender, KeyEventArgs e)
+        {
+            if(e.Key==Key.Tab)
+            {
+                e.Handled = true;
+                var d = DataContext as MainVM;
+                d.SelectNextWeaponData();
+                (sender as TextBox).SelectAll();
+            }
+        }
     }
 }

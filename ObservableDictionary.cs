@@ -68,7 +68,7 @@ namespace dcsdbeditor
 
         public void CopyTo(KeyValuePair<string, string>[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            ((IDictionary)_internalDictionary).CopyTo(array, arrayIndex);
         }
 
         public IEnumerator<KeyValuePair<string, string>> GetEnumerator()

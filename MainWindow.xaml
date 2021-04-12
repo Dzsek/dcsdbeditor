@@ -375,9 +375,9 @@
                                         <Label>data</Label>
                                         <TextBox x:Name="weaponDataKey" Width="200"></TextBox> 
                                         <Button Padding="10,0,10,0" Command="{Binding DataContext.AddWeaponData, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" CommandParameter="{Binding Text,ElementName=weaponDataKey}">+</Button>
-                                        <TextBox Width="200" Text="{Binding DataContext.SelectedWeaponDataValue, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
+                                        <TextBox Width="200" PreviewKeyDown="tabpressed" Text="{Binding DataContext.SelectedWeaponDataValue, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
                                     </StackPanel>
-                                    <ListBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding data}" SelectedItem="{Binding DataContext.SelectedWeaponData, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}">
+                                    <ListBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding data}" SelectedItem="{Binding DataContext.SelectedWeaponData, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <Grid>
